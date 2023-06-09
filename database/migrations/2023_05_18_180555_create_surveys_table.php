@@ -23,6 +23,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->timestamps();
             $table->timestamp('expire_date')->nullable();
+            $table->index(['user_id']);
         });
     }
 

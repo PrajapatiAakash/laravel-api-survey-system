@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use App\Enums\QuestionTypeEnum;
+use Illuminate\Validation\Rule;
 
 class SurveyController extends Controller
 {
@@ -189,23 +190,29 @@ class SurveyController extends Controller
     }
 
     /**
-     * This function is used for create the function
+     * Create a question and return
+     *
      * @param array $data
+     * @return mixed
+     * @throws \Illuminate\Validation\ValidationException
      */
-    private function createFunction($data)
+    private function createQuestion($data)
     {
         if (is_array($data['data'])) {
             $data['data'] = json_encode($data['data']);
         }
-        $validate = Validator::make($data, [
+        $validator = Validator::make($data, [
             'question' => 'required|string',
-            'type' => ['required', new Enum(QuestionTypeEnum::class)],
+            'type' => [
+                //'required', new Enum(QuestionTypeEnum::class)
+                'required', Rule::in(['text', 'textarea', 'select', 'radio', 'checkbox'])
+            ],
             'description' => 'nullable|string',
             'data' => 'present',
             'survey_id' => 'exists:App\Models\Survey,id'
         ]);
 
-        return SurveyQuestion::create($validate->validated());
+        return SurveyQuestion::create($validator->validated());
     }
 
     /**
@@ -220,7 +227,10 @@ class SurveyController extends Controller
         $validate = Validator::make($data, [
             'id' => 'exists:App\Models\SurveyQuestion,id',
             'question' => 'required|string',
-            'type' => ['required', new Enum(QuestionTypeEnum::class)],
+            'type' => [
+                //'required', new Enum(QuestionTypeEnum::class)
+                'required', Rule::in(['text', 'textarea', 'select', 'radio', 'checkbox'])
+            ],
             'description' => 'nullable|string',
             'data' => 'present'
         ]);

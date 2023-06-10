@@ -68,4 +68,13 @@ class AuthController extends Controller
             'success' => true
         ]);
     }
+
+    /**
+     * This function is used for get the information of current user
+     * @param Request $request
+     */
+    public function me(Request $request)
+    {
+        return $request->user();
+    }
 }

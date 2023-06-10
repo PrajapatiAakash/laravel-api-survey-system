@@ -35,4 +35,12 @@ class Survey extends Model
             ->generateSlugsFrom('title')
             ->saveSlugsTo('slug');
     }
+
+    /**
+     * This function is used for get the survey questions
+     */
+    public function questions()
+    {
+        return $this->hasMany(SurveyQuestion::class);
+    }
 }

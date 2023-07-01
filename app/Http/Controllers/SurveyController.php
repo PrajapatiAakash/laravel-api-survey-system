@@ -30,7 +30,7 @@ class SurveyController extends Controller
         return SurveyResource::collection(
             Survey::where('user_id', $user->id)
                 ->orderBy('created_at', 'DESC')
-                ->paginate(10)
+                ->paginate(3)
         );
     }
 
@@ -96,7 +96,7 @@ class SurveyController extends Controller
             }
         }
 
-        $survey = Survey::update($survey);
+        $survey->update($data);
 
         // Get ids as plain array of existing questions
         $existingIds = $survey->questions()->pluck('id')->toArray();
@@ -225,7 +225,7 @@ class SurveyController extends Controller
         if (is_array($data['data'])) {
             $data['data'] = json_encode($data['data']);
         }
-        $validate = Validator::make($data, [
+        $validator = Validator::make($data, [
             'id' => 'exists:App\Models\SurveyQuestion,id',
             'question' => 'required|string',
             'type' => [
@@ -236,6 +236,6 @@ class SurveyController extends Controller
             'data' => 'present'
         ]);
 
-        return SurveyQuestion::update($validator->validated());
+        return $question->update($validator->validated());
     }
 }
